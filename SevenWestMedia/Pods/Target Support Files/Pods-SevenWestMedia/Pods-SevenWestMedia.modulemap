@@ -1,0 +1,6 @@
+framework module Pods_SevenWestMedia {
+  umbrella header "Pods-SevenWestMedia-umbrella.h"
+
+  export *
+  module * { export * }
+}

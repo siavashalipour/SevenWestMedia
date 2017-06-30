@@ -9,17 +9,21 @@
 import Foundation
 import RxCocoa
 import RxSwift
-import RxSwiftUtilities
 
 struct ProgramViewModel {
     
+    // MARK:- Properties
     let apiRequest: RequestClient
     private let bag: DisposeBag = DisposeBag()
     
+    // MARK:- Initialiser
     init(with apiRequest: RequestClient) {
         self.apiRequest = apiRequest
     }
     
+    /// fetched programs
+    ///
+    /// - Returns: return an Observer of the programs
     func getPrograms() -> Observable<[ProgramModel]>  {
         let apiObserver = NetworkService.shared.makeNetworkCallWith(requestClient: apiRequest)
         return Observable.create { observer in
@@ -36,11 +40,12 @@ struct ProgramViewModel {
                             }
                             // sort them
                             observer.onNext(self.sort(programs: programArray))
+                        } else {
+                            observer.onError(APIError.badReponse)
                         }
                     case .error(let error):
                         observer.onError(error)
                     }
-                    
                 case .error(let error):
                     observer.onError(error)
                 default:
@@ -51,6 +56,12 @@ struct ProgramViewModel {
             return Disposables.create()
         }
     }
+    // MARK:- Private helper
+    
+    /// sort programs array based on start time
+    ///
+    /// - Parameter programs: program array to be sorted
+    /// - Returns: sorted program array
     private func sort(programs: [ProgramModel]) -> [ProgramModel] {
         return programs.sorted { (a, b) -> Bool in
             a.startTime < b.startTime
@@ -70,8 +81,8 @@ struct ProgramModel {
         self.id = json[JSONKeys.Program.id] as? Int ?? 0
         self.title = json[JSONKeys.Program.title] as? String ?? ""
         self.imageURL = json[JSONKeys.Program.imageUrl] as? String ?? ""
-        self.startTime = Misc.transformDateFormat(json[JSONKeys.Program.startTime]as? String) ?? Date()
-        self.endTime = Misc.transformDateFormat(json[JSONKeys.Program.endTime] as? String) ?? Date()
+        self.startTime = Date.transformDateFormat(json[JSONKeys.Program.startTime]as? String) ?? Date()
+        self.endTime = Date.transformDateFormat(json[JSONKeys.Program.endTime] as? String) ?? Date()
     }
 }
 

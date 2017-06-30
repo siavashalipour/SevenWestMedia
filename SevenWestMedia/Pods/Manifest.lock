@@ -2,9 +2,6 @@ PODS:
   - RxCocoa (3.5.0):
     - RxSwift (~> 3.4)
   - RxSwift (3.5.0)
-  - RxSwiftUtilities (1.0.1):
-    - RxCocoa (~> 3.0)
-    - RxSwift (~> 3.0)
   - SDWebImage (4.0.0):
     - SDWebImage/Core (= 4.0.0)
   - SDWebImage/Core (4.0.0)
@@ -12,24 +9,13 @@ PODS:
 DEPENDENCIES:
   - RxCocoa (~> 3.4)
   - RxSwift (~> 3.4)
-  - RxSwiftUtilities (from `https://github.com/RxSwiftCommunity/RxSwiftUtilities.git`)
   - SDWebImage
-
-EXTERNAL SOURCES:
-  RxSwiftUtilities:
-    :git: https://github.com/RxSwiftCommunity/RxSwiftUtilities.git
-
-CHECKOUT OPTIONS:
-  RxSwiftUtilities:
-    :commit: 9641e007c3ae067889bc6dc8830f3a4112ce0c10
-    :git: https://github.com/RxSwiftCommunity/RxSwiftUtilities.git
 
 SPEC CHECKSUMS:
   RxCocoa: a0a09f45d0e5b48ecb6a4a7b4b4c89c88d3f633f
   RxSwift: 18ee9d78b45edb3b0b7e79916b47a116e6dbc842
-  RxSwiftUtilities: 2614ffe05d2da158f79f50314a08122d13ac61d4
   SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
 
-PODFILE CHECKSUM: f2a38c71ab427dcaa0c0a586aa2c7d3b4524a412
+PODFILE CHECKSUM: 2592bec868ee035249f97b1f54989ad8cd88fdfb
 
 COCOAPODS: 1.2.1

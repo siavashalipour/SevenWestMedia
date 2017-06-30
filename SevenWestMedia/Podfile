@@ -1,5 +1,5 @@
 # Uncomment the next line to define a global platform for your project
-# platform :ios, '9.0'
+platform :ios, '9.0'
 
 target 'SevenWestMedia' do
   # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
@@ -7,8 +7,7 @@ target 'SevenWestMedia' do
 
     pod 'RxSwift', '~> 3.4'
     pod 'RxCocoa', '~> 3.4'
-    pod 'RxSwiftUtilities', :git => 'https://github.com/RxSwiftCommunity/RxSwiftUtilities.git'
-    pod 'SDWebImage'
+    pod 'SDWebImage', '~>3.8'
     
   target 'SevenWestMediaTests' do
     inherit! :search_paths

@@ -9,17 +9,21 @@
 import Foundation
 import RxCocoa
 import RxSwift
-import RxSwiftUtilities
 
 struct ChannelsViewModel {
     
+    // MARK:- Properties
     let apiRequest: RequestClient
     private let bag: DisposeBag = DisposeBag()
     
+    // MARK:- Initialise
     init(with apiRequest: RequestClient) {
         self.apiRequest = apiRequest
     }
     
+    /// fetched channels
+    ///
+    /// - Returns: return an Observer of the channels
     func getChannels() -> Observable<[ChannelModel]>  {
         let apiObserver = NetworkService.shared.makeNetworkCallWith(requestClient: apiRequest)
         return Observable.create { observer in
@@ -36,6 +40,8 @@ struct ChannelsViewModel {
                             }
                             // sort them
                             observer.onNext(self.sort(channels: channelArray))
+                        } else {
+                            observer.onError(APIError.badReponse)
                         }
                     case .error(let error):
                         observer.onError(error)
@@ -51,6 +57,12 @@ struct ChannelsViewModel {
             return Disposables.create()
         }
     }
+    // MARK:- Private helper
+    
+    /// sort channel array based on display order
+    ///
+    /// - Parameter programs: channel array to be sorted
+    /// - Returns: sorted program array
     private func sort(channels: [ChannelModel]) -> [ChannelModel] {
         return channels.sorted { (a, b) -> Bool in
             a.displayOrder < b.displayOrder

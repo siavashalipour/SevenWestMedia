@@ -9,12 +9,16 @@
 import UIKit
 import RxCocoa
 import RxSwift
-import RxSwiftUtilities
 
-class ViewController: UIViewController {
+class ChannelsViewController: UIViewController {
     
+    // MARK:- View Outlets
     @IBOutlet weak var channelTableView: UITableView!
+    
+    // MARK:- Private properties
     fileprivate var channels: [ChannelModel] = []
+    
+    // MARK:- View lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -25,24 +29,7 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    private func bindUI() {
-        let client = RequestClient.init(withPath: "https://s3-ap-southeast-2.amazonaws.com/swm-ftp-s3/ios/channel_list.json", requestType: .get)
-        let vm = ChannelsViewModel.init(with: client)
-        let _ = vm.getChannels().subscribe { (event) in
-            if let channels = event.element {
-                DispatchQueue.main.async {
-                    self.setupTableViewWith(channels: channels)
-                }
-            }
-        }
-        
-    }
-    private func setupTableViewWith(channels: [ChannelModel]) {
-        self.channels = channels
-        channelTableView.dataSource = self
-        channelTableView.delegate = self
-        channelTableView.reloadData()
-    }
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier ==  MainStoryboardSegue.showDetail {
             if sender is ChannelModel {
@@ -53,9 +40,36 @@ class ViewController: UIViewController {
             }
         }
     }
+    // MARK:- Private Helper
+    
+    /// instantiate the ViewModel for this view controller and binds the ViewModel data to the TableView for presenting
+    private func bindUI() {
+        let client = RequestClient.init(withPath: "\(APIPath.base)/channel_list.json", requestType: .get)
+        let vm = ChannelsViewModel.init(with: client)
+        let _ = vm.getChannels().subscribe(onNext: { (models) in
+            DispatchQueue.main.async {
+                self.setupTableViewWith(channels: models)
+            }
+        }, onError: { (error) in
+            DispatchQueue.main.async {
+                self.showOneButtonAlertViewWith(error: error, actionTitle: "OK")
+            }
+        })
+        
+    }
+    
+    /// setups tableView datasource and delegate after the ViewModel has finished
+    ///
+    /// - Parameter channels: fetched channel models
+    private func setupTableViewWith(channels: [ChannelModel]) {
+        self.channels = channels
+        channelTableView.dataSource = self
+        channelTableView.delegate = self
+        channelTableView.reloadData()
+    }
 }
-
-extension ViewController: UITableViewDataSource, UITableViewDelegate {
+// MARK:- UITableViewDataSource, UITableViewDelegate
+extension ChannelsViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: UITableViewCell
@@ -74,7 +88,6 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         return channels.count
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
         performSegue(withIdentifier: MainStoryboardSegue.showDetail, sender: channels[indexPath.row])
     }
 }

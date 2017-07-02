@@ -44,14 +44,17 @@ class ChannelsViewController: UIViewController {
     
     /// instantiate the ViewModel for this view controller and binds the ViewModel data to the TableView for presenting
     private func bindUI() {
+        // create channel client
         let client = RequestClient.init(withPath: "\(APIPath.base)/channel_list.json", requestType: .get)
+        // create Channels view model
         let vm = ChannelsViewModel.init(with: client)
+        // subscribe for channels
         let _ = vm.getChannels().subscribe(onNext: { (models) in
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { // got channels, update tableView on mainThread
                 self.setupTableViewWith(channels: models)
             }
         }, onError: { (error) in
-            DispatchQueue.main.async {
+            DispatchQueue.main.async { // sth went wrong show error
                 self.showOneButtonAlertViewWith(error: error, actionTitle: "OK")
             }
         })

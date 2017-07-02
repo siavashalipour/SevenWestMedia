@@ -32,15 +32,19 @@ class ProgramViewController: UIViewController {
     /// instantiate the ViewModel for this view controller and binds the ViewModel data to the TableView for presenting
     private func bindUI() {
         if let selectedChannel = selectedChannel {
+            // set nav title based on the selected channel id
             title = "Channel \(selectedChannel.id)"
+            // create prgrams clinet
             let client = RequestClient.init(withPath: "\(APIPath.base)/channel_programs_\(selectedChannel.id).json", requestType: .get)
+            // create program view model
             let vm = ProgramViewModel.init(with: client)
+            // subscribe to get programs for selected channel
             let _ = vm.getPrograms().subscribe(onNext: { (models) in
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.async { // got programs, update tableView on main thread
                         self.setupTableViewWith(programs: models)
                     }
             }, onError: { (error) in
-                DispatchQueue.main.async {
+                DispatchQueue.main.async { // sth went wrong show a simple error
                     self.showOneButtonAlertViewWith(error: error, actionTitle: "OK")
                 }
             })
